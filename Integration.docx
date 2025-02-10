@@ -1,0 +1,50 @@
+Part 5: Integration and Testing Documentation
+Integration
+1. Sync MySQL Data to Excel
+
+A. Using Python (pandas + MySQL connector)
+To pull data from MySQL and export it into Excel, follow these steps:
+
+Step 1: Install Required Libraries
+Ensure you have the necessary Python libraries installed:
+//bash Script
+pip install pandas mysql-connector-python openpyxl
+
+Step 2: Python Script to Fetch Data and Export to Excel
+//python file
+
+import mysql.connector
+import pandas as pd
+
+# Database connection details
+db_config = {
+    "host": "your_mysql_host",
+    "user": "your_mysql_user",
+    "password": "your_mysql_password",
+    "database": "your_database_name"
+}
+
+# Connect to MySQL
+conn = mysql.connector.connect(**db_config)
+cursor = conn.cursor()
+
+# SQL Query to fetch disease data
+query = """
+SELECT d.disease_id, d.disease_name, d.symptoms, u.username 
+FROM diseases d
+JOIN users u ON d.user_id = u.user_id;
+"""
+
+# Load data into pandas DataFrame
+df = pd.read_sql(query, conn)
+
+# Export to Excel
+df.to_excel("TeaLeaf_Disease_Data.xlsx", index=False)
+
+# Close connection
+cursor.close()
+conn.close()
+
+print("Data successfully exported to Excel!")
+
+
